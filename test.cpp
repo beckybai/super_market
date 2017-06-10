@@ -118,7 +118,7 @@ string get_string(){
 
 //打印出商品的信息
 void print_good_store(Good_Info* good){
-	printf("%d\t%f\t%s\t%s\t%d\t%d\t%s\n",good->ID,good->price,(good->name).c_str(),(good->place_origin).c_str(),good->save_amount,good->out_amount,(good->place_now).c_str());
+	printf("%d \t %.2f \t %s \t %s \t %d \t %d \t %s \n",good->ID,good->price,(good->name).c_str(),(good->place_origin).c_str(),good->save_amount,good->out_amount,(good->place_now).c_str());
 }
 
 vector<Administrator_Info*> get_administrator_info(){
@@ -242,6 +242,10 @@ void write_administrator_info(vector<Administrator_Info*> vsi){
 	}
 }
 
+void print_good(Good_Info &good){
+	printf("%d \t %.2f \t %s \t %s \t %d \t %d \t %s\n",good.ID,good.price,(good.name).c_str(),(good.place_origin).c_str(),good.save_amount,good.out_amount,(good.place_now).c_str());
+}
+
 //int ID;
 //float price;
 //char *name;
@@ -264,18 +268,28 @@ vector<Good_Info*> get_goods_info(){
 	        printf("%s\n", tmp_line); //打印该行。
 	        // The structure of this is username, password, money, items_buy.
 	        Good_Info* good = new Good_Info();
+	        // char* delim = ",";
 	        char* ID = strtok( tmp_line, ",");
 	        good->ID = atoi(ID);
+	        printf("%d",good->ID);
+	        char* price = strtok(NULL,",");
+	        good->price = atoi(price);
 	        char* name = strtok(NULL, ",");
 	        good->name = name;
+	        printf("%s\n",(good->name).c_str());
 	        char* place_origin = strtok(NULL, ",");
 	        good->place_origin = place_origin;
+	        // printf("%s\n",(good->place_origin).c_str());
 	        char* save_amount = strtok(NULL,",");
 	        good->save_amount = atoi(save_amount);
+	        // printf("%d",good->save_amount);
 	        char* out_amount = strtok(NULL,",");
 	        good->out_amount = atoi(out_amount);
 	        char* place_now = strtok(NULL,",");
 	        good->place_now = place_now;
+
+	        printf("%s\n",(good->name).c_str());
+	        // print_good(*good);
 	        GI_v.push_back(good);
 	    }
 	    fclose(fp);
@@ -333,7 +347,7 @@ void write_goods_info(vector<Good_Info*> vgi){
 
 		for(tmp_i;tmp_i<vsi_len;tmp_i++){
 			good  = vgi[tmp_i];
-			fprintf(fp,"%d,%f,%s,%s,%d,%d,%s\n",good->ID,good->price,(good->name).c_str(),(good->place_origin).c_str(),good->save_amount,good->out_amount,(good->place_now).c_str());
+			fprintf(fp,"%d,%f,%s,%s,%d,%d,%s",good->ID,good->price,(good->name).c_str(),(good->place_origin).c_str(),good->save_amount,good->out_amount,(good->place_now).c_str());
 		}
 		fclose(fp);
 	}
@@ -369,12 +383,13 @@ vector<Shopping_Cart_Info*> get_cart_info(){
 	        printf("%s\n", tmp_line); //打印该行。
 	        // The structure of this is username, password, money, items_buy.
 	        Shopping_Cart_Info* cart = new Shopping_Cart_Info();
-	        char* name = strtok(tmp_line, ",");
+	        char *delim = ",";
+	        char* name = strtok(tmp_line, delim);
 	        cart->name = name;
-	        char* id = strtok(NULL, ",");
+	        char* id = strtok(NULL, delim);
 	        cart->ID = atoi(id);
 //	        good->place_origin = place_origin;
-	        char* num = strtok(NULL,",");
+	        char* num = strtok(NULL,delim);
 	        cart->num = atoi(num);
 	        sci.push_back(cart);
 	    }
@@ -401,10 +416,12 @@ void write_cart_info(vector<Shopping_Cart_Info*> sci){
 	fclose(fp);
 }
 
+
+
 void scan_good_store(){
 	vector<Good_Info*> good_list = get_goods_info();
 	while(1){
-		printf("what do you want to do?\n");
+		printf("what do you want to do? Please enter the 0 to leave the system, otherwise the change will not be saved! \n");
 		printf("1. Scan the goods in the store\n");
 		printf("2. Delete the goods\n");
 		printf("3. Add new goods to the store\n");
@@ -533,29 +550,15 @@ void scan_good_store(){
 		}
 		case 5:{
 			int good_list_size = good_list.size();
-			sort(good_list.begin(),good_list.end(),good_up);
-			// node *a = new node[good_list_size];
-			// int *seq = new int[good_list_size];
-			// for(tmp_i=0;tmp_i<good_list_size;tmp_i++){
-			// 	a[tmp_i].value = good_list[tmp_i]->save_amount;
-			// 	a[tmp_i].ID = tmp_i;
-			// }
-			// printf("Do you want to have up-sort(0) or down-sort(1)?\n");
-			// int tmp = get_num();
-			// if(tmp){
-			// 	sort(a,a+good_list_size,cmp_down);
-			// }
-			// else
-			// 	sort(a,a+good_list_size,cmp_up);
+			printf("Do you want to have up-sort(0) or down-sort(1)?\n");
+			int tmp = get_num();
+			if(tmp){
+				sort(good_list.begin(),good_list.end(),good_up);
+			}
+			else
+				sort(good_list.begin(),good_list.end(),good_down);
 
-			// vector<Good_Info*> good_list_copy = good_list;
-
-			// for(tmp_i=0;tmp_i<good_list_size;tmp_i++){
-			// 	good_list[tmp_i] = good_list_copy[a[tmp_i].ID];
-			// }
 			break;
-			// int *rank_seq = save_amount_sort(seq, good_list_size);
-
 		}
 
 		case 0:{
@@ -573,41 +576,66 @@ void scan_good_store(){
 }
 
 
-void print_good(Good_Info* good){
-	printf("%d\t%f\t%s\t%s\t%d\t%d\t%s\n",good->ID,good->price,(good->name).c_str(),(good->place_origin).c_str(),good->save_amount,good->out_amount,(good->place_now).c_str());
-}
-
-
 void scan_good(Customer_Info* customer){
 	vector<Good_Info*> good_list = get_goods_info();
 	int good_list_size = good_list.size();
 	int tmp_i = 0;
 
-	printf("---------------------------------------------------------");
+	printf("---------------------------------------------------------\n");
 	printf("No\tID\tPrice\tName\tOrigin_place\tSave_amount\tOut_amount\tPlace_now\n");
-	printf("---------------------------------------------------------");
+	printf("---------------------------------------------------------\n");
 
 
 	for(tmp_i;tmp_i<good_list_size;tmp_i++){
-		printf("%d",tmp_i);
-		print_good(good_list[tmp_i]);
+		printf("%d\t",tmp_i);
+		print_good(*good_list[tmp_i]);
 	}
 
 	while(1){
 		printf("What do you like ? Please print the ID of the good, thanks! press -1 to exit\n");
 		int tmp_id;
 		scanf("%d",&tmp_id);fflush(stdin);
+
+		// printf("test_error!\n");
+
 		if(tmp_id==-1)
 			break;
-		if(good_list[tmp_id]->save_amount==0){
+
+		int flag = 0;
+		int this_one = 0;
+		for(tmp_i=0;tmp_i<good_list_size;tmp_i++){
+			if(tmp_id==good_list[tmp_i]->ID){
+				this_one = tmp_i;
+				flag = 1;
+					// printf("test_error!\n");
+
+			}
+		}
+		// printf("test_error!\n");
+
+		if(!flag){
+			printf("We don't have the thing you want to buy! Please choice another one! \n ");
+			continue;
+		}
+
+		// printf("test_error2!\n");
+
+		if(good_list[this_one]->save_amount==0){
 			printf("Sorry, this good has already been sold out!\n");
 		}
 		else{
 			printf("How much do you want to buy? ");
 			int tmp_num;
 			scanf("%d",&tmp_num);fflush(stdin);
+			if(tmp_num>good_list[this_one]->save_amount){
+				tmp_num = good_list[this_one]->save_amount;
+				printf("We don't have enough thing... So you can only buy %d.",good_list[this_one]->save_amount);
+			}
+
 			printf("Add this thing to your shopping cart!\n");
-			write_cart(customer->username, good_list[tmp_id]->ID,tmp_num);
+			write_cart(customer->username, good_list[this_one]->ID,tmp_num);
+			good_list[this_one]->save_amount -= tmp_num;
+			write_goods_info(good_list);
 		}
 	}
 }
@@ -705,7 +733,7 @@ Customer_Info* check_customer_info(vector<Customer_Info*> vci, string name, stri
 	for(tmp_i;tmp_i<total_customer;tmp_i++){
 		if(name==vci[tmp_i]->username){
 			if(password==vci[tmp_i]->password){
-				printf("%d",vci[tmp_i]->password);
+				// printf("%d",vci[tmp_i]->password);
 				return vci[tmp_i];
 			}
 			else{
@@ -789,25 +817,25 @@ void Customer(){
 				printf("5. Send back the good\n");
 				printf("-1 exit\n");
 				char a = 'a';
-				char tmp_char = getchar();
+				int tmp_char = get_num();
 				switch(tmp_char){
-					case '1':
+					case 1:
 //						print_own_things();
 						break;
-					case '2':
+					case 2:
 						scan_good(this_one);
 						break;
-					case '3':
+					case 3:
 						print_shopping_cart(this_one);
 						break;
-					case '4':
+					case 4:
 						clear_cart(this_one);
 						break;
-					case '5':
+					case 5:
 //						return_goods();
 						break;
 
-					case '0':
+					case 0:
 						printf("Thanks for your log in, Good bye!\n");
 						return;
 					default:
