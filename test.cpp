@@ -1,18 +1,9 @@
-/*
- * main.cpp
- *
- *  Created on: Jun 8, 2017
- *      Author: becky
- */
-
-
-/*
- ============================================================================
- Name        : test.c
- Author      : test2
+ /*============================================================================
+ Name        : test.cpp
+ Author      : Becky
  Version     :
  Copyright   : Your copyright notice
- Description :a Hello World in C, Ansi-style
+ Description : Project for the C programming class
  ============================================================================
  */
 
@@ -63,7 +54,18 @@ struct Good_Info{
 	int save_amount;
 	int out_amount;
 	string place_now;
+	// bool operator < (const Good_Info* g) cosnt{
+	// 	return save_amount < g->save_amount;
+	// }
 };
+
+bool good_up(const Good_Info* a,const Good_Info *b){
+	return a->save_amount < b->save_amount;
+}
+
+bool good_down(const Good_Info* a,const Good_Info *b){
+	return a->save_amount > b->save_amount;
+}
 
 //购物车信息
 struct Shopping_Cart_Info{
@@ -416,7 +418,10 @@ void scan_good_store(){
 		switch(tmp_char){
 		case 1:{
 			int good_list_size = good_list.size();
+			printf("---------------------------------------------------------\n");
 			printf("No\tID\tPrice\tName\tOrigin_place\tSave_amount\tOut_amount\tPlace_now\n");
+			printf("---------------------------------------------------------\n");
+
 			for(tmp_i=0;tmp_i<good_list_size;tmp_i++){
 				printf("%d\t",tmp_i);
 				print_good_store(good_list[tmp_i]);
@@ -528,25 +533,26 @@ void scan_good_store(){
 		}
 		case 5:{
 			int good_list_size = good_list.size();
-			node *a = new node[good_list_size];
+			sort(good_list.begin(),good_list.end(),good_up);
+			// node *a = new node[good_list_size];
 			// int *seq = new int[good_list_size];
-			for(tmp_i=0;tmp_i<good_list_size;tmp_i++){
-				a[tmp_i].value = good_list[tmp_i]->save_amount;
-				a[tmp_i].ID = tmp_i;
-			}
-			printf("Do you want to have up-sort(0) or down-sort(1)?\n");
-			int tmp = get_num();
-			if(tmp){
-				sort(a,a+good_list_size,cmp_down);
-			}
-			else
-				sort(a,a+good_list_size,cmp_up);
+			// for(tmp_i=0;tmp_i<good_list_size;tmp_i++){
+			// 	a[tmp_i].value = good_list[tmp_i]->save_amount;
+			// 	a[tmp_i].ID = tmp_i;
+			// }
+			// printf("Do you want to have up-sort(0) or down-sort(1)?\n");
+			// int tmp = get_num();
+			// if(tmp){
+			// 	sort(a,a+good_list_size,cmp_down);
+			// }
+			// else
+			// 	sort(a,a+good_list_size,cmp_up);
 
-			vector<Good_Info*> good_list_copy = good_list;
+			// vector<Good_Info*> good_list_copy = good_list;
 
-			for(tmp_i=0;tmp_i<good_list_size;tmp_i++){
-				good_list[tmp_i] = good_list_copy[a[tmp_i].ID];
-			}
+			// for(tmp_i=0;tmp_i<good_list_size;tmp_i++){
+			// 	good_list[tmp_i] = good_list_copy[a[tmp_i].ID];
+			// }
 			break;
 			// int *rank_seq = save_amount_sort(seq, good_list_size);
 
