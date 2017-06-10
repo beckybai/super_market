@@ -70,6 +70,7 @@ bool good_down(const Good_Info* a,const Good_Info *b){
 //购物车信息
 struct Shopping_Cart_Info{
 	string name;
+	string good_name;
 	int ID;
 	int num;
 };
@@ -172,18 +173,18 @@ vector<Customer_Info*> get_customer_info(){
 	        char* money = strtok(NULL, ",");
 	        new_customer->money= atoi(money);
 
-	        char* items = strtok(NULL, ",");
+	        // char* items = strtok(NULL, ",");
 
-	        vector<int> item_list; // 假设这个人最多买了100个东西啊。get_customer_info
-	        char* token = strtok(items,"|");
-	        int tmp_i = 0;
-	        while( token != NULL)
-	        {
-	        	item_list.push_back(atoi(token));
-	            token = strtok(NULL, "|");
-	            tmp_i ++;
-	        }
-	        new_customer->items_buy = item_list;
+	        // vector<int> item_list; // 假设这个人最多买了100个东西啊。get_customer_info
+	        // char* token = strtok(items,"|");
+	        // int tmp_i = 0;
+	        // while( token != NULL)
+	        // {
+	        // 	item_list.push_back(atoi(token));
+	        //     token = strtok(NULL, "|");
+	        //     tmp_i ++;
+	        // }
+	        // new_customer->items_buy = item_list;
 	        CI_v.push_back(new_customer);
 	    }
 	    fclose(fp);
@@ -354,14 +355,14 @@ void write_goods_info(vector<Good_Info*> vgi){
 }
 
 
-void write_cart(string name, int id, int num ){
+void write_cart(string name, int ID, string good_name, int num ){
 	FILE *fp;
 	if(NULL==(fp=fopen("cart_info.txt","a"))){
 		printf("error when opening the cart_info.txt");
 		exit(-1);
 	}
 	else{
-		fprintf(fp,"%s,%d,%d\n",name.c_str(),id,num);
+		fprintf(fp,"%s,%d,%s,%d\n",name.c_str(),ID,good_name.c_str(),num);
 	}
 	fclose(fp);
 }
@@ -383,13 +384,15 @@ vector<Shopping_Cart_Info*> get_cart_info(){
 	        printf("%s\n", tmp_line); //打印该行。
 	        // The structure of this is username, password, money, items_buy.
 	        Shopping_Cart_Info* cart = new Shopping_Cart_Info();
-	        char *delim = ",";
-	        char* name = strtok(tmp_line, delim);
+	        // char *delim = ",";
+	        char* name = strtok(tmp_line, ",");
 	        cart->name = name;
-	        char* id = strtok(NULL, delim);
+	        char* id = strtok(NULL, ",");
 	        cart->ID = atoi(id);
 //	        good->place_origin = place_origin;
-	        char* num = strtok(NULL,delim);
+	        char* good_name = strtok(NULL,",");
+	        cart->good_name = good_name;
+	        char* num = strtok(NULL,",");
 	        cart->num = atoi(num);
 	        sci.push_back(cart);
 	    }
@@ -410,12 +413,11 @@ void write_cart_info(vector<Shopping_Cart_Info*> sci){
 		int tmp_i = 0;
 		for(tmp_i;tmp_i<sci_len;tmp_i++){
 			Shopping_Cart_Info* cart = sci[tmp_i];
-			fprintf(fp,"%s,%d,%d\n",(cart->name).c_str(),cart->ID,cart->num);
+			fprintf(fp,"%s,%d,%s,%d\n",(cart->name).c_str(),cart->ID,(cart->good_name).c_str(),cart->num);
 		}
 	}
 	fclose(fp);
 }
-
 
 
 void scan_good_store(){
@@ -633,7 +635,7 @@ void scan_good(Customer_Info* customer){
 			}
 
 			printf("Add this thing to your shopping cart!\n");
-			write_cart(customer->username, good_list[this_one]->ID,tmp_num);
+			write_cart(customer->username, good_list[this_one]->ID, good_list[this_one]->name,tmp_num);
 			good_list[this_one]->save_amount -= tmp_num;
 			write_goods_info(good_list);
 		}
@@ -644,18 +646,21 @@ void print_shopping_cart(Customer_Info*customer){
 	vector<Shopping_Cart_Info*> sci = get_cart_info();
 	int sci_len = sci.size();
 	int tmp_i = 0;
-	printf("name\tnumber\n");
+	printf("ID\tname\tnumber\n");
 	for(tmp_i;tmp_i<sci_len;tmp_i++){
 		if(sci[tmp_i]->name==customer->username)
-			printf("%d\t%d\n",sci[tmp_i]->ID,sci[tmp_i]->num);
+			printf("%d\t%s\t%d\n",sci[tmp_i]->ID,(sci[tmp_i]->good_name).c_str(),sci[tmp_i]->num);
 	}
 }
 
 void clear_cart(Customer_Info*customer){
 	//1st: find the user's record in the shopping cart file;
 	vector<Shopping_Cart_Info*> sci = get_cart_info();
+	printf("Be sure of the safe1\n");
 	vector<Good_Info*> gi  = get_goods_info();
+
 	vector<Customer_Info*> ci = get_customer_info();
+		printf("Be sure of the safe2\n");
 	int sci_len = sci.size();
 	int gi_len = gi.size();
 	int tmp_i = 0;
@@ -672,6 +677,7 @@ void clear_cart(Customer_Info*customer){
 		if(username==name){
 			for(tmp_j;tmp_j<gi_len;tmp_j++){
 				if(ID == gi[tmp_j]->ID){
+					printf("Be sure of the safe3\n");
 					if(gi[tmp_j]->save_amount >= tmp_sci->num){	//2ed: check if there are enough things in the storage.
 						gi[tmp_j]->save_amount -=tmp_sci->num;
 						total_expense += gi[tmp_j]->price * tmp_sci->num;
