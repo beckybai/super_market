@@ -272,12 +272,12 @@ vector<Good_Info*> get_goods_info(){
 	        // char* delim = ",";
 	        char* ID = strtok( tmp_line, ",");
 	        good->ID = atoi(ID);
-	        printf("%d",good->ID);
+	        // printf("%d",good->ID);
 	        char* price = strtok(NULL,",");
 	        good->price = atoi(price);
 	        char* name = strtok(NULL, ",");
 	        good->name = name;
-	        printf("%s\n",(good->name).c_str());
+	        // printf("%s\n",(good->name).c_str());
 	        char* place_origin = strtok(NULL, ",");
 	        good->place_origin = place_origin;
 	        // printf("%s\n",(good->place_origin).c_str());
@@ -289,7 +289,7 @@ vector<Good_Info*> get_goods_info(){
 	        char* place_now = strtok(NULL,",");
 	        good->place_now = place_now;
 
-	        printf("%s\n",(good->name).c_str());
+	        // printf("%s\n",(good->name).c_str());
 	        // print_good(*good);
 	        GI_v.push_back(good);
 	    }
