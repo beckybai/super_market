@@ -1,3 +1,5 @@
-![image](https://github.com/beckybai/super_market/image/User_process.png)
+# 管理者基本操作
+![image](https://github.com/beckybai/super_market/blob/master/image/Admin_process.png)
 
-![image](https://github.com/beckybai/super_market/image/Admin_process.png)
+# 使用者基本操作
+![image](https://github.com/beckybai/super_market/blob/master/image/User_process.png)
