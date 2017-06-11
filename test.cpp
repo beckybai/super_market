@@ -222,6 +222,7 @@ void write_customer_info(vector<Customer_Info*> vsi){
 	}
 }
 
+//将管理者的信息写入文件(用户名,密码)
 void write_administrator_info(vector<Administrator_Info*> vsi){
 	//write back all the customer's information.
 	FILE *fp;
@@ -243,6 +244,7 @@ void write_administrator_info(vector<Administrator_Info*> vsi){
 	}
 }
 
+//打印单个商品的信息
 void print_good(Good_Info &good){
 	printf("%d \t %.2f \t %s \t %s \t %d \t %d \t %s\n",good.ID,good.price,(good.name).c_str(),(good.place_origin).c_str(),good.save_amount,good.out_amount,(good.place_now).c_str());
 }
@@ -298,6 +300,8 @@ vector<Good_Info*> get_goods_info(){
 	return GI_v;
 }
 
+
+//检查密码是否太过简单
 int check_password(string password){
 	if(password.size()<6){
 		printf("The length of the password has to be over 6\n");
@@ -335,6 +339,7 @@ int check_password(string password){
 // }
 
 
+//将所有的物品的信息写入一个文件
 void write_goods_info(vector<Good_Info*> vgi){
 	FILE *fp;
 	if(NULL==(fp=fopen("good_info.txt","w"))){
@@ -354,6 +359,8 @@ void write_goods_info(vector<Good_Info*> vgi){
 	}
 }
 
+
+//删除某一个物品
 void delete_good(vector<Good_Info*> good_list,int tmp_delete){
 		int flag =  0;
 		int good_list_size = good_list.size();
@@ -374,6 +381,7 @@ void delete_good(vector<Good_Info*> good_list,int tmp_delete){
 
 
 
+//把选中的物体写入购物车
 void write_cart(string name, int ID, string good_name, int num ){
 	FILE *fp;
 	if(NULL==(fp=fopen("cart_info.txt","a"))){
@@ -388,6 +396,7 @@ void write_cart(string name, int ID, string good_name, int num ){
 
 
 
+//获得购物车的全部信息
 vector<Shopping_Cart_Info*> get_cart_info(){
 	FILE* fp;
 	vector<Shopping_Cart_Info*> sci;
@@ -420,6 +429,7 @@ vector<Shopping_Cart_Info*> get_cart_info(){
 	}
 }
 
+//获得已经购买的物品的信息
 vector<Shopping_Cart_Info*> get_buy_info(){
 	FILE* fp;
 	vector<Shopping_Cart_Info*> sci;
@@ -453,6 +463,7 @@ vector<Shopping_Cart_Info*> get_buy_info(){
 }
 
 
+//把购物车的信息写入到文件中
 void write_cart_info(vector<Shopping_Cart_Info*> sci){
 	FILE* fp;
 	if(NULL==(fp=fopen("cart_info.txt","w"))){
@@ -470,6 +481,7 @@ void write_cart_info(vector<Shopping_Cart_Info*> sci){
 	fclose(fp);
 }
 
+//把已经购买的东西写入文件中
 void write_buy_info(vector<Shopping_Cart_Info*> sci){
 	FILE* fp;
 	if(NULL==(fp=fopen("buy_info.txt","w"))){
@@ -488,6 +500,7 @@ void write_buy_info(vector<Shopping_Cart_Info*> sci){
 }
 
 
+//查看商店中所有的物品, 管理员对其进行相关操作
 void scan_good_store(){
 	vector<Good_Info*> good_list = get_goods_info();
 	while(1){
@@ -639,6 +652,7 @@ void scan_good_store(){
 }
 
 
+//消费者查看所有商品并且对齐进行操作
 void scan_good(Customer_Info* customer){
 	vector<Good_Info*> good_list = get_goods_info();
 	int good_list_size = good_list.size();
@@ -703,6 +717,7 @@ void scan_good(Customer_Info* customer){
 	}
 }
 
+//打印购物车的所有信息
 void print_shopping_cart(Customer_Info*customer){
 	vector<Shopping_Cart_Info*> sci = get_cart_info();
 	int sci_len = sci.size();
@@ -717,6 +732,7 @@ void print_shopping_cart(Customer_Info*customer){
 	}
 }
 
+//打印已经购买的物体的所有信息
 void print_buy_info(Customer_Info *customer){
 	vector<Shopping_Cart_Info*> sci = get_buy_info();
 	int sci_len = sci.size();
@@ -731,6 +747,7 @@ void print_buy_info(Customer_Info *customer){
 	}
 }
 
+//回退物品以及相关的操作
 void return_goods(Customer_Info * customer){
 	vector<Shopping_Cart_Info*> sci = get_buy_info();
 	vector<Good_Info*> good_list = get_goods_info();
@@ -765,6 +782,7 @@ void return_goods(Customer_Info * customer){
 
 }
 
+//清空购物车(指购买商品)
 void clear_cart(Customer_Info*customer){
 	//1st: find the user's record in the shopping cart file;
 	vector<Shopping_Cart_Info*> sci = get_cart_info(); // THings in the shoppoing cart
@@ -894,6 +912,7 @@ string get_password(){
 
 
 
+// 检查用户名和密码
 Customer_Info* check_customer_info(vector<Customer_Info*> vci, string name, string password){
 	Customer_Info* this_one;
 	int tmp_i = 0;
@@ -915,6 +934,7 @@ Customer_Info* check_customer_info(vector<Customer_Info*> vci, string name, stri
 	return 0;
 }
 
+// 检查管理员用户名和密码
 Administrator_Info* check_admin_info(vector<Administrator_Info*> vai, string name, string password){
 	Administrator_Info* this_one;
 	int tmp_i = 0;
@@ -936,6 +956,7 @@ Administrator_Info* check_admin_info(vector<Administrator_Info*> vai, string nam
 }
 
 
+// 管理员入口
 void Adminstrator(){
 	string name = get_name();
 	string password = get_password();
@@ -952,6 +973,7 @@ void Adminstrator(){
 	}
 }
 
+//消费者入口
 void Customer(){
 	vector<Customer_Info*> customer_list = get_customer_info();
 	while(1){
@@ -1017,6 +1039,7 @@ void Customer(){
 	}
 }
 
+//消费者注册入口
 void Customer_R(){
 	while(1){
 		vector<Customer_Info*> customer_list = get_customer_info();
@@ -1070,6 +1093,7 @@ void Customer_R(){
 	}
 }
 
+//管理者注册入口
 void Adminstrator_R(){
 	while(1){
 		string name = get_name();
